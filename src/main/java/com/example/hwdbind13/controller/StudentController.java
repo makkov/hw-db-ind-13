@@ -4,7 +4,7 @@ import com.example.hwdbind13.model.Student;
 import com.example.hwdbind13.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -34,5 +34,10 @@ public class StudentController {
     @DeleteMapping
     public Student delete(@RequestParam long id) {
         return studentService.delete(id);
+    }
+
+    @GetMapping("/age-between")
+    public List<Student> getWhenAgeBetween(@RequestParam Integer min, @RequestParam Integer max) {
+        return studentService.getWhenAgeBetween(min, max);
     }
 }

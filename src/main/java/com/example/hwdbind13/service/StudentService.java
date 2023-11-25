@@ -4,6 +4,8 @@ import com.example.hwdbind13.model.Student;
 import com.example.hwdbind13.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StudentService {
 
@@ -34,5 +36,9 @@ public class StudentService {
         Student studentForDelete = get(id);
         studentRepository.deleteById(id);
         return studentForDelete;
+    }
+
+    public List<Student> getWhenAgeBetween(Integer min, Integer max) {
+        return studentRepository.findAllByAgeBetween(min, max);
     }
 }
