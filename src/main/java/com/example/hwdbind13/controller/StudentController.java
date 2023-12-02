@@ -1,5 +1,6 @@
 package com.example.hwdbind13.controller;
 
+import com.example.hwdbind13.dto.StudentDto;
 import com.example.hwdbind13.model.Student;
 import com.example.hwdbind13.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student create(@RequestBody Student student) {
+    public Student create(@RequestBody StudentDto student) {
         return studentService.add(student.getName(), student.getAge());
     }
 

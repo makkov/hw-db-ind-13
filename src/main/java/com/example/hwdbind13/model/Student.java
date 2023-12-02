@@ -1,9 +1,6 @@
 package com.example.hwdbind13.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -16,9 +13,22 @@ public class Student {
     private String name;
     private int age;
 
+    @ManyToOne
+    private Faculty faculty;
+
     public Student(String name, int age) {
+        this.id = id;
         this.name = name;
         this.age = age;
+        this.faculty = faculty;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
     public Student() {
