@@ -4,8 +4,14 @@ import com.example.hwdbind13.model.Avatar;
 import com.example.hwdbind13.model.Student;
 import com.example.hwdbind13.repository.AvatarRepository;
 import com.example.hwdbind13.repository.StudentRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -31,7 +37,7 @@ public class AvatarService {
         this.avatarsDir = avatarsDir;
     }
 
-    public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+    public ResponseEntity<String> uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentRepository.findById(studentId).get();
         // строчка ниже работает для MacOs. заменить для Windows: Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
         Path filePath = Path.of(new File("").getAbsolutePath() + avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
@@ -52,9 +58,30 @@ public class AvatarService {
         avatar.setMediaType(avatarFile.getContentType());
         avatar.setData(avatarFile.getBytes());
         avatarRepository.save(avatar);
+        return ResponseEntity.ok().build();
     }
 
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public void downloadAvatar(Long id, HttpServletResponse response) throws IOException{
+        Avatar avatar = avatarRepository.findById(id).get();
+        Path path = Path.of(avatar.getFilePath());
+        try(InputStream is = Files.newInputStream(path);
+            OutputStream os = response.getOutputStream();) {
+            response.setStatus(200);
+            response.setContentType(avatar.getMediaType());
+            response.setContentLength((int) avatar.getFileSize());
+            is.transferTo(os);
+        }
+    }
+
+    public ResponseEntity<byte[]> downloadFromDb(Long id) {
+        Avatar avatar = avatarRepository.findById(id).get();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
 }
