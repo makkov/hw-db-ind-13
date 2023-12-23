@@ -4,10 +4,10 @@ import com.example.hwdbind13.model.Student;
 import com.example.hwdbind13.repository.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -65,5 +65,22 @@ public class StudentService {
     public List<Student> getLastFive() {
         logger.info("Was invoked method getLastFive");
         return studentRepository.getLastFiveOrderByIdDesc();
+    }
+
+    public List<String> getAllNamesStartWithA() {
+        String firstSymbol = "A";
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .filter(name -> name.startsWith(firstSymbol))
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public double getAvgAgeWithStream() {
+        return studentRepository.findAll().stream()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElse(-1);
     }
 }

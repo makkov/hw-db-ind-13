@@ -43,4 +43,30 @@ public class FacultyService {
         facultyRepository.deleteById(id);
         return facultyForDelete;
     }
+
+    public String getLongestName() {
+//        return facultyRepository.findAll().stream()
+//                .map(Faculty::getName)
+//                .sorted((name1, name2) -> -1 * (name1.length() - name2.length()))
+//                .toList()
+//                .get(0);
+
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max((name1, name2) -> name1.length() - name2.length())
+                .get();
+
+//        Вернуть лист с самыми длинными именами:
+//        List<Faculty> facultyList = facultyRepository.findAll();
+//        int maxLength = facultyList.stream()
+//                .map(Faculty::getName)
+//                .max((name1, name2) -> name1.length() - name2.length())
+//                .map(String::length)
+//                .get();
+//
+//        return facultyList.stream()
+//                .map(Faculty::getName)
+//                .filter(name -> name.length() == maxLength)
+//                .collect(Collectors.toList());
+    }
 }
